@@ -7,6 +7,8 @@ import {
   Delete,
   Put,
   ParseIntPipe,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import { EmployeeService } from './employee.service';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
@@ -39,6 +41,7 @@ export class EmployeeController {
     return this.employeeService.update(+id, updateEmployeeDto);
   }
 
+  @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.employeeService.remove(+id);

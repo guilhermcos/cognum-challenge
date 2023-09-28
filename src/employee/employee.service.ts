@@ -1,26 +1,29 @@
 import { Injectable } from '@nestjs/common';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
 import { UpdateEmployeeDto } from './dto/update-employee.dto';
+import { EmployeeRepository } from './employee.repository';
 
 @Injectable()
 export class EmployeeService {
+  constructor(private readonly employeeRepository: EmployeeRepository) {}
+
   create(createEmployeeDto: CreateEmployeeDto) {
-    return 'This action adds a new employee';
+    return this.employeeRepository.create(createEmployeeDto);
   }
 
   findAll() {
-    return `This action returns all employee`;
+    return this.employeeRepository.findAll();
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} employee`;
+    return this.employeeRepository.findOne(id);
   }
 
   update(id: number, updateEmployeeDto: UpdateEmployeeDto) {
-    return `This action updates a #${id} employee`;
+    return this.employeeRepository.update(id, updateEmployeeDto);
   }
 
   remove(id: number) {
-    return `This action removes a #${id} employee`;
+    return this.employeeRepository.remove(id);
   }
 }

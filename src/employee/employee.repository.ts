@@ -8,22 +8,37 @@ export class EmployeeRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   create(createEmployeeDto: CreateEmployeeDto) {
-    return 'This action adds a new employee';
+    return this.prisma.employee.create({
+      data: createEmployeeDto,
+    });
   }
 
   findAll() {
-    return `This action returns all employee`;
+    return this.prisma.employee.findMany();
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} employee`;
+    return this.prisma.employee.findUnique({
+      where: {
+        id,
+      },
+    });
   }
 
   update(id: number, updateEmployeeDto: UpdateEmployeeDto) {
-    return `This action updates a #${id} employee`;
+    return this.prisma.employee.update({
+      where: {
+        id,
+      },
+      data: updateEmployeeDto,
+    });
   }
 
   remove(id: number) {
-    return `This action removes a #${id} employee`;
+    return this.prisma.employee.delete({
+      where: {
+        id,
+      },
+    });
   }
 }
