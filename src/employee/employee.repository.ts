@@ -7,26 +7,26 @@ import { PrismaService } from '../prisma/prisma.service';
 export class EmployeeRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  create(createEmployeeDto: CreateEmployeeDto) {
-    return this.prisma.employee.create({
+  async create(createEmployeeDto: CreateEmployeeDto) {
+    return await this.prisma.employee.create({
       data: createEmployeeDto,
     });
   }
 
-  findAll() {
-    return this.prisma.employee.findMany();
+  async findAll() {
+    return await this.prisma.employee.findMany();
   }
 
-  findOne(id: number) {
-    return this.prisma.employee.findUnique({
+  async findOne(id: number) {
+    return await this.prisma.employee.findUnique({
       where: {
         id,
       },
     });
   }
 
-  update(id: number, updateEmployeeDto: UpdateEmployeeDto) {
-    return this.prisma.employee.update({
+  async update(id: number, updateEmployeeDto: UpdateEmployeeDto) {
+    return await this.prisma.employee.update({
       where: {
         id,
       },
@@ -34,8 +34,8 @@ export class EmployeeRepository {
     });
   }
 
-  remove(id: number) {
-    return this.prisma.employee.delete({
+  async remove(id: number) {
+    return await this.prisma.employee.delete({
       where: {
         id,
       },

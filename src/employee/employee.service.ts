@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
 import { UpdateEmployeeDto } from './dto/update-employee.dto';
 import { EmployeeRepository } from './employee.repository';
@@ -7,23 +7,32 @@ import { EmployeeRepository } from './employee.repository';
 export class EmployeeService {
   constructor(private readonly employeeRepository: EmployeeRepository) {}
 
-  create(createEmployeeDto: CreateEmployeeDto) {
-    return this.employeeRepository.create(createEmployeeDto);
+  async create(createEmployeeDto: CreateEmployeeDto) {
+    return await this.employeeRepository.create(createEmployeeDto);
   }
 
-  findAll() {
-    return this.employeeRepository.findAll();
+  async findAll() {
+    return await this.employeeRepository.findAll();
   }
 
-  findOne(id: number) {
-    return this.employeeRepository.findOne(id);
+  async findOne(id: number) {
+    const user = await this.employeeRepository.findOne(id);
+    if (!user) throw new NotFoundException('Employee Not Found');
+    return user;
   }
 
-  update(id: number, updateEmployeeDto: UpdateEmployeeDto) {
-    return this.employeeRepository.update(id, updateEmployeeDto);
+  async update(id: number, updateEmployeeDto: UpdateEmployeeDto) {
+    await this.validateExistUser(id);
+    return await this.employeeRepository.update(id, updateEmployeeDto);
   }
 
-  remove(id: number) {
-    return this.employeeRepository.remove(id);
+  async remove(id: number) {
+    await this.validateExistUser(id);
+    return await this.employeeRepository.remove(id);
+  }
+
+  private async validateExistUser(id: number) {
+    const user = await this.employeeRepository.findOne(id);
+    if (!user) throw new NotFoundException('Employee Not Found');
   }
 }
