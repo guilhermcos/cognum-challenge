@@ -23,6 +23,11 @@ export class EmployeeController {
     return await this.employeeService.create(createEmployeeDto);
   }
 
+  @Get('populate')
+  async populate() {
+    return await this.employeeService.populate();
+  }
+
   @Get()
   async findAll() {
     return await this.employeeService.findAll();

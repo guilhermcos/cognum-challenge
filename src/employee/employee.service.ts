@@ -1,11 +1,15 @@
-import { HttpException, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
 import { UpdateEmployeeDto } from './dto/update-employee.dto';
 import { EmployeeRepository } from './employee.repository';
+import { RandomUserApiService } from '../random-user-api/random-user-api.service';
 
 @Injectable()
 export class EmployeeService {
-  constructor(private readonly employeeRepository: EmployeeRepository) {}
+  constructor(
+    private readonly employeeRepository: EmployeeRepository,
+    private readonly randomUserApiService: RandomUserApiService,
+  ) {}
 
   async create(createEmployeeDto: CreateEmployeeDto) {
     return await this.employeeRepository.create(createEmployeeDto);
@@ -29,6 +33,13 @@ export class EmployeeService {
   async remove(id: number) {
     await this.validateExistUser(id);
     return await this.employeeRepository.remove(id);
+  }
+
+  async populate() {
+    const users: CreateEmployeeDto[] =
+      await this.randomUserApiService.getRandomUsers();
+    const generatedEmployees = await this.employeeRepository.createMany(users);
+    return generatedEmployees;
   }
 
   private async validateExistUser(id: number) {

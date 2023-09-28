@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
 import { UpdateEmployeeDto } from './dto/update-employee.dto';
 import { PrismaService } from '../prisma/prisma.service';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class EmployeeRepository {
@@ -10,6 +11,19 @@ export class EmployeeRepository {
   async create(createEmployeeDto: CreateEmployeeDto) {
     return await this.prisma.employee.create({
       data: createEmployeeDto,
+    });
+  }
+
+  async createMany(employees: CreateEmployeeDto[]) {
+    return await this.prisma.$transaction(async (tx) => {
+      const generatedEmployees = Promise.all(
+        employees.map(async (employee) => {
+          return await tx.employee.create({
+            data: employee,
+          });
+        }),
+      );
+      return generatedEmployees;
     });
   }
 
